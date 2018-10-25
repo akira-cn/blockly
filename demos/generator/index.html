@@ -35,6 +35,10 @@
   <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
 
   <xml id="toolbox" style="display: none">
+    <category name="Variables" colour="140" custom="VARIABLE"></category>
+    <category name="Sprites" colour="140" custom="ADD_SPRITE">
+        <button text="Create Sprite" callbackKey="doCreateSprite"></button>
+    </category>
     <category name="Logic" colour="%{BKY_LOGIC_HUE}">
       <block type="controls_if"></block>
       <block type="logic_compare"></block>
@@ -121,6 +125,23 @@
          toolbox: document.getElementById('toolbox')});
     Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
                                demoWorkspace);
+    
+    demoWorkspace.registerButtonCallback("doCreateSprite", doCreateSprite);
+    function doCreateSprite(button) {
+      const workspace = demoWorkspace;
+      Blockly.Variables.createVariable(button.getTargetWorkspace(), null, '');
+      var blockList = Blockly.Variables.flyoutCategoryBlocks(workspace);
+      console.log(blockList, demoWorkspace.createVariable);
+      return blockList;
+    }
+    demoWorkspace.registerToolboxCategoryCallback(
+      'ADD_SPRITE', function(workspace) {
+        var buttonText = '<xml><button text="Create Sprite" callbackKey="doCreateSprite"></button></xml>';
+        var button = Blockly.Xml.textToDom(buttonText).firstChild;
+        console.log(button);
+        var blockList = Blockly.Variables.flyoutCategoryBlocks(workspace);
+        return [button, ...blockList];
+      });
 
     function showCode() {
       // Generate JavaScript code and display it.
