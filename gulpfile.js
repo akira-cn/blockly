@@ -72,6 +72,30 @@ if (typeof window === 'object') { window.Blockly = Blockly; }\n`))
       .pipe(gulp.dest(''));
 });
 
+gulp.task('blockly_javascript_cn', function() {
+  var srcs = [
+    'blockly_compressed.js',
+    'blocks_compressed.js',
+    'javascript_compressed.js',
+    'msg/js/zh-hans.js'
+  ];
+  // Concatenate the sources, appending the module export at the bottom.
+  // Override textToDomDocument_, providing Node alternative to DOMParser.
+  return gulp.src(srcs)
+      .pipe(gulp.concat('blockly_node_javascript_cn.js'))
+      .pipe(insert.append(`
+if (typeof DOMParser !== 'function') {
+  var JSDOM = require('jsdom').JSDOM;
+  Blockly.Xml.textToDomDocument_ = function(text) {
+    var jsdom = new JSDOM(text, { contentType: 'text/xml' });
+    return jsdom.window.document;
+  };
+}
+if (typeof module === 'object') { module.exports = Blockly; }
+if (typeof window === 'object') { window.Blockly = Blockly; }\n`))
+      .pipe(gulp.dest(''));
+});
+
 /**
  * Task-builder for the watch function. Currently any change invokes the whole
  * build script. Invoke with "gulp watch".

@@ -326,6 +326,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     }
     if (change) {
       this.displayRenamedVar_(oldName, newName);
+      Blockly.Procedures.mutateCallers(this);
     }
   },
   /**
